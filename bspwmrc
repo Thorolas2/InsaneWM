@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+BSPDIR="$HOME/.config/bspwm"
+
+# export PATH="${PATH}:$BSPDIR:$BSPDIR/utilities:$BSPDIR/scripts/bspc:$BSPDIR/scripts/rofi"
+# export _JAVA_AWT_WM_NONREPARENTING=1
+
+
+function workspaces {
+	name=1
+	for monitor in `bspc query -M`; do
+		bspc monitor ${monitor} -n "$name" -d '󰆍' '󰅱' '󰒃' '󰖟' '󰂺' '󰍩' '󰇟' '' '󰤺' '󰒓' 
+		let name++
+	done
+}
+
+function bspc_config_windows {
+	BSPWM_FBC='#5294E2'
+	BSPWM_NBC='#1E2128'
+	BSPWM_ABC='#C778DD'
+	BSPWM_PFC='#98C379'
+
+	BSPWM_BORDER='1'
+	BSPWM_SRATIO='0.50'
+	BSPWM_GAP='2'
+
+	bspc config border_width "$BSPWM_BORDER"
+	bspc config split_ratio "$BSPWM_SRATIO"
+	bspc config window_gap "$BSPWM_GAP"
+
+	bspc config presel_feedback_color "$BSPWM_PFC"
+	bspc config focused_border_color "$BSPWM_FBC"
+	bspc config active_border_color "$BSPWM_ABC"
+	bspc config normal_border_color "$BSPWM_NBC"
+
+	bspc config single_monocle true
+	bspc config borderless_monocle true
+	bspc config paddingless_monocle true
+	bspc config gapless_monocle true
+
+	bspc config automatic_scheme longest_side
+	bspc config initial_polarity second_child
+}
+
+function bspc_config_pointer {
+	bspc config focus_follows_pointer true
+	bspc config presel_feedback true
+
+	bspc config pointer_modifier control
+	bspc config pointer_action2 resize_side
+}
+
+function bspc_config {
+	bspc_config_windows
+	bspc_config_pointer
+}
+
+function bspc_rules {
+	:
+	# # remove all rules first
+	# bspc rule -r *:*
+
+	# ## 1 > terminal (always open terminal on workspace-1)
+	# bspc rule -a Alacritty desktop='^1' follow=on focus=on
+	# bspc rule -a Xfce4-terminal desktop='^1' follow=on focus=on
+
+	# ## 2 > web (always open web browser on workspace-2)
+	# bspc rule -a firefox desktop='^2' follow=on focus=on
+	# bspc rule -a Opera desktop='^2' follow=on focus=on
+	# bspc rule -a chromium desktop='^2' follow=on focus=on
+
+	# ## 3 > files (always open file manager on workspace-3)
+	# declare -a files=(Pcmanfm Trello Thunar qBittorrent)
+	# for i in ${files[@]}; do
+	#    bspc rule -a $i desktop='^3' follow=on focus=on; done
+
+	# ## 4 > code (always open editors on workspace-4)
+	# declare -a coding=(Geany VSCode Code code libresprite-simosx.libresprite)
+	# for i in ${coding[@]}; do
+	#    bspc rule -a $i desktop='^4' follow=on focus=on; done
+
+	# ## 5 > office and docs (always open office/doc apps on workspace-5)
+	# declare -a office=(Gucharmap Atril Evince \
+	# libreoffice-writer libreoffice-calc libreoffice-impress \
+	# libreoffice-startcenter libreoffice Soffice *:libreofficedev *:soffice)
+	# for i in ${office[@]}; do
+	#    bspc rule -a $i desktop='^5' follow=on focus=on; done
+
+	# ## 6 > communication (always open communication apps on workspace-6)
+	# declare -a comm=(Thunderbird TelegramDesktop discord Hexchat)
+	# for i in ${comm[@]}; do
+	#    bspc rule -a $i desktop='^6' follow=on focus=on; done
+
+	# ## 7 > media (always open media apps on workspace-7)
+	# declare -a media=(Audacity Music MPlayer Lxmusic amberol)
+	# for i in ${media[@]}; do
+	#    bspc rule -a $i desktop='^7' state=floating follow=on focus=on; done
+
+	# ## 8 > system (always open system apps on workspace-8)
+	# bspc rule -a 'VirtualBox Manager' desktop='^8' follow=on focus=on
+	# bspc rule -a GParted desktop='^8' follow=on focus=on
+	# declare -a settings=(Lxappearance Lxtask Lxrandr Arandr \
+	# System-config-printer.py Pavucontrol Exo-helper-1 \
+	# Xfce4-power-manager-settings)
+	# for i in ${settings[@]}; do
+	#    bspc rule -a $i desktop='^8' state=floating follow=on focus=on; done
+
+	# ## Always Floating Apps
+	# declare -a floating=(alacritty-float Pcmanfm Thunar Onboard Yad 'Firefox:Places' \
+	# Viewnior feh Nm-connection-editor)
+	# for i in ${floating[@]}; do
+	#    bspc rule -a $i state=floating follow=on focus=on; done
+
+	# bspc rule -a Conky state=floating manage=off
+	# bspc rule -a stalonetray state=floating manage=off
+}
+
+function resetall {
+	killall -9 xsettingsd sxhkd dunst ksuperkey xfce4-power-manager bspc
+	
+	xsettingsd --config="$BSPDIR"/../bspwm.old/xsettingsd &
+	
+	if [[ ! `pidof xfce-polkit` ]]; then
+		/usr/lib/xfce-polkit/xfce-polkit &
+	fi
+
+	bspc wm --adopt-orphans
+	xsetroot -cursor_name left_ptr
+
+	xfce4-power-manager &
+	
+	CURTHEME="$(cat $BSPDIR/../bspwm.old/themes/.current)"
+	feh --no-fehbg --bg-fill "/home/thorolas/.config/bspwm.old/themes/$CURTHEME/wallpaper" 
+}
+
+function update_shortcuts {
+	sxhkd -c "$BSPDIR"/sxhkdrc &
+
+	ksuperkey -e 'Super_L=Alt_L|F1' &
+	ksuperkey -e 'Super_R=Alt_L|F1' &
+}
+
+# workspaces
+bspc_config
+# bspc_rules
+
+resetall
+update_shortcuts
+
+# bspbar
+# bspcomp
+# bspdunst
+# bspfloat &
+
+# xsetroot -cursor_name left_ptr
+# sxhkd -c $BSPDIR/sxhkdrc
+
+# bspc config border_width 2
+# bspc config window_gap 0
+
+# bspc config split_ratio 0.5
+# bspc config focus_follows_pointer true
+# bspc config pointer_modifier mod1
+
+# bspc config automatic_scheme spiral
