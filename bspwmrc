@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
-BSPDIR="$HOME/.config/bspwm"
+source ./locations
+
+# PATH="${PATH}"
+
+BSPDIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+
+export _JAVA_AWT_WM_NONREPARENTING=1
+export BSPDIR	
 
 # export PATH="${PATH}:$BSPDIR:$BSPDIR/utilities:$BSPDIR/scripts/bspc:$BSPDIR/scripts/rofi"
-# export _JAVA_AWT_WM_NONREPARENTING=1
 
 
 function workspaces {
 	name=1
 	for monitor in `bspc query -M`; do
-		bspc monitor ${monitor} -n "$name" -d '󰆍' '󰅱' '󰒃' '󰖟' '󰂺' '󰍩' '󰇟' '' '󰤺' '󰒓' 
+		bspc monitor "$monitor" -n "$name" -d '󰆍' '󰅱' '󰒃' '󰖟' '󰂺' '󰍩' '󰇟' '' '󰤺' '󰒓' 
 		let name++
 	done
 }
@@ -34,7 +40,6 @@ function bspc_config_windows {
 
 	bspc config single_monocle true
 	bspc config borderless_monocle true
-	bspc config paddingless_monocle true
 	bspc config gapless_monocle true
 
 	bspc config automatic_scheme longest_side
@@ -133,7 +138,7 @@ function resetall {
 }
 
 function update_shortcuts {
-	sxhkd -c "$BSPDIR"/sxhkdrc &
+	sxhkd -c "$BSPDIR"/configuration/shortcuts/sxhkdrc &
 
 	ksuperkey -e 'Super_L=Alt_L|F1' &
 	ksuperkey -e 'Super_R=Alt_L|F1' &
@@ -143,7 +148,7 @@ function update_shortcuts {
 bspc_config
 # bspc_rules
 
-resetall
+# resetall
 update_shortcuts
 
 # bspbar

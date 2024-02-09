@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+BSPDIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+
+CONFIG_DIR="configuration"
+SCRIPTS_DIR="scripts"
+
+SHORTCUTS_DIR="$CONFIG_DIR/shortcuts"
