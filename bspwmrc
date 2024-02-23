@@ -2,13 +2,30 @@
 source "${0%/*}/locations"
 
 export _JAVA_AWT_WM_NONREPARENTING=1
+export PATH="$PATH:$LIBRARIES"
 export BSPDIR
 
-function workspaces {
-	name=1
+
+function get_workspaces {
+	index=1
+
+	while :;
+	do
+		tmp="$(stoml "$CONFIG_DIR/bspc/configuration.toml" workspaces.workspace-$index)"
+		[ -z "$tmp" ] && break
+		echo "$tmp"
+		let index++	
+	done
+}
+
+function init_workspaces {
+	notify-send "$(get_workspaces)"
+	index=1
+
 	for monitor in `bspc query -M`; do
-		bspc monitor "$monitor" -n "$name" -d '󰆍' '󰅱' '󰒃' '󰖟' '󰂺' '󰍩' '󰇟' '' '󰤺' '󰒓' 
-		let name++
+		bspc monitor "$monitor" -n "$index" -d '󰆍'  
+		# bspc monitor "$monitor" -n "$index" -d '󰅱' 'test'
+		let index++
 	done
 }
 
@@ -41,7 +58,6 @@ function bspc_config_windows {
 
 	bspc config remove_disabled_monitors true
 	bspc config remove_unplugged_monitors true
-	bspc config merge-overlapping_monitors false
 }
 
 function bspc_config_pointer {
@@ -82,7 +98,7 @@ function update_shortcuts {
 	ksuperkey -e 'Super_R=Alt_L|F1' &
 }
 
-# workspaces
+init_workspaces
 bspc_config
 # bspc_rules
 
