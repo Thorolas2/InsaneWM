@@ -1,61 +1,41 @@
 #!/usr/bin/env bash
+
+# shellcheck disable=1091
+# shellcheck disable=2086
+
 source "${0%/*}/locations"
+source "$UTILITIES/utils.bash"
 
 export _JAVA_AWT_WM_NONREPARENTING=1
 export PATH="$PATH:$LIBRARIES"
 export BSPDIR
 
-
-function get_workspaces {
-	index=1
-
-	while :;
-	do
-		tmp="$(stoml "$CONFIG_DIR/bspc/configuration.toml" workspaces.workspace-$index)"
-		[ -z "$tmp" ] && break
-		echo "$tmp"
-		let index++	
-	done
-}
+BSPCONFIG="$CONFIG_DIR/bspc/configuration.toml"
 
 function init_workspaces {
-	notify-send "$(get_workspaces)"
-	index=1
-
-	for monitor in `bspc query -M`; do
-		bspc monitor "$monitor" -n "$index" -d '󰆍'  
-		# bspc monitor "$monitor" -n "$index" -d '󰅱' 'test'
-		let index++
-	done
+	workspaces=$(toml_getpropertylist "$BSPCONFIG" "workspaces.workspace")
+	for monitor in `bspc query -M`; do bspc monitor "$monitor" -d $workspaces; done
 }
 
 function bspc_config_windows {
-	BSPWM_FBC='#5294E2'
-	BSPWM_NBC='#1E2128'
-	BSPWM_ABC='#C778DD'
-	BSPWM_PFC='#98C379'
+	bspc config border_width "$(toml_getproperty "$BSPCONFIG" "windows.window-border")"
+	bspc config split_ratio  "$(toml_getproperty "$BSPCONFIG" "windows.window-sratio")"
+	bspc config window_gap   "$(toml_getproperty "$BSPCONFIG" "windows.window-gap")"
 
-	BSPWM_BORDER='1'
-	BSPWM_SRATIO='0.50'
-	BSPWM_GAP='10'
+	bspc config presel_feedback_color "$(toml_getproperty "$BSPCONFIG" "colors.presel-feedback")"
 
-	bspc config border_width "$BSPWM_BORDER"
-	bspc config split_ratio "$BSPWM_SRATIO"
-	bspc config window_gap "$BSPWM_GAP"
-
-	bspc config presel_feedback_color "$BSPWM_PFC"
-	bspc config focused_border_color "$BSPWM_FBC"
-	bspc config active_border_color "$BSPWM_ABC"
-	bspc config normal_border_color "$BSPWM_NBC"
+	bspc config focused_border_color  "$(toml_getproperty "$BSPCONFIG" "colors.focused-border")"
+	bspc config active_border_color   "$(toml_getproperty "$BSPCONFIG" "colors.active-border")"
+	bspc config normal_border_color   "$(toml_getproperty "$BSPCONFIG" "colors.normal-border")"
 
 	bspc config single_monocle true
-	bspc config borderless_monocle true
 	bspc config gapless_monocle true
+	bspc config borderless_monocle true
 
-	bspc config automatic_scheme longest_side
 	bspc config initial_polarity second_child
-	bspc config center_pseudo_tiled true
+	bspc config automatic_scheme longest_side
 
+	bspc config center_pseudo_tiled true
 	bspc config remove_disabled_monitors true
 	bspc config remove_unplugged_monitors true
 }
@@ -73,24 +53,6 @@ function bspc_config {
 	bspc_config_pointer
 }
 
-# function resetall {
-# 	killall -9 xsettingsd sxhkd dunst ksuperkey xfce4-power-manager bspc
-	
-# 	xsettingsd --config="$BSPDIR"/../bspwm.old/xsettingsd &
-	
-# 	if [[ ! `pidof xfce-polkit` ]]; then
-# 		/usr/lib/xfce-polkit/xfce-polkit &
-# 	fi
-
-# 	bspc wm --adopt-orphans
-# 	xsetroot -cursor_name left_ptr
-
-# 	xfce4-power-manager &
-	
-# 	# CURTHEME="$(cat $BSPDIR/../bspwm.old/themes/.current)"
-# 	# feh --no-fehbg --bg-fill "/home/thorolas/.config/bspwm.old/themes/$CURTHEME/wallpaper" 
-# }
-
 function update_shortcuts {
 	sxhkd -c "$BSPDIR"/configuration/shortcuts/sxhkdrc &
 
@@ -98,26 +60,22 @@ function update_shortcuts {
 	ksuperkey -e 'Super_R=Alt_L|F1' &
 }
 
+function system_runall {
+	bspc_runall
+	rofi_runall
+}
+
+function rofi_runall {
+	:
+}
+
+function bspc_runall {
+	exec "$SCRIPTS_DIR/bspwm/statusbar.sh"
+}
+
+
 init_workspaces
 bspc_config
-# bspc_rules
 
-# resetall
 update_shortcuts
-
-# bspbar
-# bspcomp
-# bspdunst
-# bspfloat &
-
-# xsetroot -cursor_name left_ptr
-# sxhkd -c $BSPDIR/sxhkdrc
-
-# bspc config border_width 2
-# bspc config window_gap 0
-
-# bspc config split_ratio 0.5
-# bspc config focus_follows_pointer true
-# bspc config pointer_modifier mod1
-
-# bspc config automatic_scheme spiral
+system_runall

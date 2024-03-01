@@ -1,5 +1,4 @@
 [workspaces]
-
 workspace-1  = "󰆍"
 workspace-2  = "󰅱"
 workspace-3  = "󰒃"
@@ -10,3 +9,15 @@ workspace-7  = "󰇟"
 workspace-8  = "󰤺"
 workspace-9  = ""
 workspace-10 = "󰒓"
+
+[colors]
+presel-feedback = "#98C379"
+
+normal-border   = "#98C379"
+active-border   = "#C778DD"
+focused-border  = "#5294E2"
+
+[windows]
+window-gap    = "10"
+window-sratio = "0.2"
+window-border = "1"
