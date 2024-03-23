@@ -18,6 +18,6 @@ active-border   = "#C778DD"
 focused-border  = "#5294E2"
 
 [windows]
-window-gap    = "10"
-window-sratio = "0.2"
+window-gap    = "5"
+window-sratio = "0.5"
 window-border = "1"

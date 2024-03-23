@@ -1,0 +1,4 @@
+# usage: ini_setproperty(file, property, value)
+function ini.setproperty {
+    sed -i -e "s/$2 = .*/$2 = $3/g" "$1"; 
+}

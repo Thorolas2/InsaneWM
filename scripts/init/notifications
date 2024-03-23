@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+dunst -config "$CONFIG_DIR"/dunst/dunstrc &

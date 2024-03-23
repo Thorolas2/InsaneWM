@@ -1,0 +1,20 @@
+
+#usage: toml.getproperty(file, property)
+function toml.getproperty {
+    echo "$(stoml "$1" "$2")"
+}
+
+#usage: toml.getpropertylist(file, property)
+function toml.getpropertylist {
+	index=1
+	propertylist=""
+
+	while :; do
+		tmp="$(toml.getproperty "$1" "$2"-$index)"
+		[ -z "$tmp" ] && break
+		propertylist="$propertylist $tmp"
+		((index++))	
+	done
+
+	echo "$propertylist"
+}

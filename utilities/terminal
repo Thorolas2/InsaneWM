@@ -1,0 +1,5 @@
+#usage: terminal.runfile(file)
+function terminal.runfile {
+	chmod +x "$1"
+	$1 &
+}

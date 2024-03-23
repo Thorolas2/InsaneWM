@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck disable=1090
+# shellcheck disable=1091
 
 BSPDIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 
@@ -10,3 +12,8 @@ SCRIPTS_DIR=$BSPDIR"/scripts"
 SHORTCUTS_DIR="$CONFIG_DIR/shortcuts"
 
 export BSPDIR CONFIG_DIR SCRIPTS_DIR SHORTCUTS_DIR LIBRARIES UTILITIES
+
+#usage add(utility)
+function locations.import {
+    source "$UTILITIES/$1";
+}

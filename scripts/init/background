@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+feh --bg-scale "$CONFIG_DIR/feh/background.png"

@@ -1,0 +1,14 @@
+
+# usage: process.kill(process_name)
+function process.kill {
+	killall -9 -q "$1"
+}
+
+# usage: process.waitkill(process_name)
+function process.waitkill {
+    process_kill "$1"
+
+	while pgrep -u $UID -x "$1" >/dev/null; 
+        do sleep 1; 
+    done
+}

@@ -1,0 +1,4 @@
+#usage: filesystem.getfiles(directory)
+function filesystem.getallfiles {
+	echo "$(find "$1" -type f)"
+}
