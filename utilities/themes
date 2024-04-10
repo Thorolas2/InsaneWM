@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+#usage: themes.getcurrent()
+function themes.getcurrent {
+    cat "$CONFIGURATION/insanewm/current-theme";
+}
+
+#usage: themes.getallthemes()
+function themes.getallthemes {
+    find themes -maxdepth 1 -not -path "themes" -type d -execdir basename {} ';'
+}

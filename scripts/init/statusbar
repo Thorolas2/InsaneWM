@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-polybar --config="$CONFIG_DIR/polybar/dumbconfig.ini" &
+polybar --config="$CONFIGURATION/polybar/dumbconfig.ini" &

@@ -26,9 +26,12 @@ alt + F1
 alt + F2
 	rofi_runner
 
+super + x
+	$SCRIPTS/rofi/iwm-powermenu
+
 # Rofi Menus/Applets
-super + {b,m,n,r,s,t,w,x}
-	{rofi_bluetooth,rofi_music,nmd,rofi_asroot,rofi_screenshot,rofi_themes,rofi_windows,rofi_powermenu}
+# super + {b,m,n,r,s,t,w,x}
+	# {rofi_bluetooth,rofi_music,nmd,rofi_asroot,rofi_screenshot,rofi_themes,rofi_windows,rofi_powermenu}
 
 super + shift + c
 	codium
@@ -79,11 +82,13 @@ super + Print
 
 # Brighness control
 XF86MonBrightness{Up,Down}
-	bspbrightness{ --inc, --dec}
+	screen=$(xrandr -q | grep ' connected' | head -n 1 | cut -d ' ' -f1) \
+	notify-send "there is $screen"
+	# bspbrightness{ --inc, --dec}
 	
 # Speaker Volume control
-XF86Audio{RaiseVolume,LowerVolume}
-	bspvolume{ --inc, --dec}
+XF86Audio{LowerVolume,RaiseVolume}
+	pulsemixer --change-volume {-,+}5
 	
 # Mic Volume control
 XF86Audio{Mute,MicMute}

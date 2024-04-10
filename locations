@@ -4,16 +4,21 @@
 
 BSPDIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 
+SCRIPTS=$BSPDIR"/scripts"
 LIBRARIES=$BSPDIR"/libraries"
 UTILITIES=$BSPDIR"/utilities"
-CONFIG_DIR=$BSPDIR"/configuration"
-SCRIPTS_DIR=$BSPDIR"/scripts"
+CONFIGURATION=$BSPDIR"/configuration"
 
-SHORTCUTS_DIR="$CONFIG_DIR/shortcuts"
+SHORTCUTS_DIR="$CONFIGURATION/shortcuts"
 
-export BSPDIR CONFIG_DIR SCRIPTS_DIR SHORTCUTS_DIR LIBRARIES UTILITIES
+export BSPDIR CONFIGURATION SCRIPTS SHORTCUTS_DIR LIBRARIES UTILITIES
 
+sourced=() 
 #usage add(utility)
 function locations.import {
-    source "$UTILITIES/$1";
+    if [[ -f "$UTILITIES/$1" ]]; then 
+        if [[ ! -z $(echo "${sourced[@]}" | grep "$1") ]]; then return; fi
+        source "$UTILITIES/$1" 
+        sourced+=("$1")
+    fi;
 }

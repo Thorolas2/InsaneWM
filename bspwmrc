@@ -5,14 +5,14 @@
 # shellcheck disable=2163
 
 source "${0%/*}/locations"
-export PATH="$PATH:$SCRIPTS_DIR/insanewm/"
+export PATH="$PATH:$SCRIPTS/insanewm/"
 
 locations.import toml
 locations.import filesystem
 locations.import terminal
 locations.import process
 
-BSPCONFIG="$CONFIG_DIR/bspc/configuration.toml"
+BSPCONFIG="$CONFIGURATION/bspc/configuration.toml"
 export _JAVA_AWT_WM_NONREPARENTING=1
 export PATH="$PATH:$LIBRARIES"
 
@@ -67,18 +67,17 @@ function system_resetall {
 	process.kill ksuperkey
 	process.kill xsettingsd
 	process.kill xfce4-power-manager
-
 }
 
 function system_initall {
 	xfce4-power-manager &
 
 	while read -r line; do terminal.runfile $line;
-	done <<< "$(filesystem.getallfiles "$SCRIPTS_DIR/init/")";
+	done <<< "$(filesystem.getallfiles "$SCRIPTS/init/")";
 }
 
 function system_updateshortcuts {
-	sxhkd -c "$BSPDIR"/configuration/shortcuts/sxhkdrc &
+	sxhkd -c "$BSPDIR"/configuration/sxhkd/sxhkdrc &
 	ksuperkey -e 'Super_L=Alt_L|F1' &
 	ksuperkey -e 'Super_R=Alt_L|F1' &
 }

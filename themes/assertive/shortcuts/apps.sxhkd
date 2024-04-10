@@ -1,0 +1,2 @@
+ctrl + alt + f
+    notify-send "Hello World"

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+option=$(echo -e "Ok\nFFFuck No" | rofi -dmenu -mesg "Turn Off PC ?")
+
+if [[ $option == "Ok" ]]; then
+    notify-send "test"
+    systemctl poweroff
+fi

@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+import sys
+import os
+
+if (len(sys.argv) < 2):
+    sys.exit();
+
+subcommand = sys.argv[1];
+themedirs = ["polybar", "rofi", "scripts", "shortcuts", "backgrounds"];
+
+match subcommand:
+    case "--new-theme":
+        theme = input("name: ");
+        location = os.getcwd() + "/" + theme;
+        os.mkdir(location);
+        for themedir in themedirs:
+            os.mkdir(location + "/" + themedir)
+         
+
+    case _:
+        print("We will do help later");
